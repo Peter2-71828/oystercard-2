@@ -1,7 +1,9 @@
 require './lib/journey.rb'
 
 class Oystercard
+
   attr_reader :balance, :journeys
+
   MAX_BALANCE = 90
   MIN_BALANCE = 1
   PENALTY = 6
@@ -18,10 +20,7 @@ class Oystercard
 
   def touch_in(station)
     fail "Minimum fare of £#{MIN_BALANCE} not met" if minimum_balance?
-    if self.in_journey? 
-      self.journeys.set_entry_station(nil)
-      fare
-    end
+    fare(false) if self.in_journey?
     self.journeys.set_entry_station(station)
   end
 
@@ -49,7 +48,7 @@ class Oystercard
     @balance -= amount
   end
 
-  def fare
-    deduct self.in_journey? == true ? MIN_BALANCE : PENALTY
+  def fare(in_use = true)
+    deduct self.in_journey? == in_use ? MIN_BALANCE : PENALTY
   end
 end
